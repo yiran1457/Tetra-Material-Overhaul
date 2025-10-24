@@ -36,14 +36,14 @@ public class MaterialVariantDataMixin extends VariantData {
 
         List<Multimap<Attribute, AttributeModifier>> attributeList = new ArrayList<>();
         attributeList.add(attributes);
-        attributeList.add(material.attributes);
+        //attributeList.add(material.attributes);
         attributeList.add(AttributeHelper.multiplyModifiers(extract.primaryAttributes, material.primary));
         attributeList.add(AttributeHelper.multiplyModifiers(extract.secondaryAttributes, material.secondary));
         attributeList.add(AttributeHelper.multiplyModifiers(extract.tertiaryAttributes, material.tertiary));
 
         List<EffectData> effectList = new ArrayList<>();
         effectList.add(effects);
-        effectList.add(material.effects);
+        //effectList.add(material.effects);
         effectList.add(EffectData.multiply(extract.primaryEffects, material.primary, material.primary));
         effectList.add(EffectData.multiply(extract.secondaryEffects, material.secondary, material.secondary));
         effectList.add(EffectData.multiply(extract.tertiaryEffects, material.tertiary, material.tertiary));

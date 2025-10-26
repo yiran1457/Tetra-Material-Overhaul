@@ -42,12 +42,6 @@
       "effects": {
         "test": [10, 5]
       }
-    },
-    "default": {
-      "attributes": {
-        "generic.attack_speed": 114514,
-        "generic.attack_damage": 114514
-      }
     }
   }
 }

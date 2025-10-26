@@ -43,8 +43,12 @@ public class MaterialDataMixin implements IMaterialData {
         private void deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context, CallbackInfoReturnable<MaterialData> cir, JsonObject jsonObject, MaterialData data) {
             if (json.getAsJsonObject().has("contexts")) {
                 var contexts = ContextData.deserialize(json.getAsJsonObject().get("contexts"), typeOfT, context);
-                contexts.put("default",new ContextData(data.attributes,data.effects));
+                if (!contexts.containsKey("default")) {
+                    contexts.put("default", new ContextData(data.attributes, data.effects));
+                }
                 ((IMaterialData) data).setContextData(contexts);
+            } else {
+                ((IMaterialData) data).setContextData(Map.of("default", new ContextData(data.attributes, data.effects)));
             }
         }
     }

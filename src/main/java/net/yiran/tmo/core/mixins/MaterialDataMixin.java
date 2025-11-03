@@ -9,11 +9,13 @@ import net.yiran.tmo.core.IMaterialData;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import se.mickelus.tetra.module.data.MaterialData;
 
 import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.Map;
 
 @Mixin(MaterialData.class)
@@ -30,6 +32,15 @@ public class MaterialDataMixin implements IMaterialData {
         return contextData;
     }
 
+    @Inject(method = "copyFields", at = @At("RETURN"),remap = false)
+    private static void copyFields(MaterialData from, MaterialData to, CallbackInfo ci) {
+        if (((IMaterialData) from).getContextData() != null) {
+            if (((IMaterialData) to).getContextData() != null) {
+                ((IMaterialData) to).getContextData().putAll(((IMaterialData) from).getContextData());
+            }
+        }
+    }
+
     @Mixin(MaterialData.Deserializer.class)
     public abstract static class DeserializerMixin implements JsonDeserializer<MaterialData> {
         @Inject(
@@ -42,13 +53,21 @@ public class MaterialDataMixin implements IMaterialData {
         )
         private void deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context, CallbackInfoReturnable<MaterialData> cir, JsonObject jsonObject, MaterialData data) {
             if (json.getAsJsonObject().has("contexts")) {
-                var contexts = ContextData.deserialize(json.getAsJsonObject().get("contexts"), typeOfT, context);
+                Map<String, ContextData> contexts = context.deserialize(json.getAsJsonObject().get("contexts"), ContextData.TYPE);
                 if (!contexts.containsKey("default")) {
-                    contexts.put("default", new ContextData(data.attributes, data.effects));
+                    var defaultContext = new ContextData();
+                    defaultContext.attributes=data.attributes;
+                    defaultContext.effects=data.effects;
+                    contexts.put("default", defaultContext);
                 }
                 ((IMaterialData) data).setContextData(contexts);
             } else {
-                ((IMaterialData) data).setContextData(Map.of("default", new ContextData(data.attributes, data.effects)));
+                Map<String, ContextData> contextData = new HashMap<>();
+                var defaultContext = new ContextData();
+                defaultContext.attributes=data.attributes;
+                defaultContext.effects=data.effects;
+                contextData.put("default", defaultContext);
+                ((IMaterialData) data).setContextData(contextData);
             }
         }
     }

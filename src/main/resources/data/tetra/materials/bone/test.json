@@ -35,12 +35,18 @@
     "hammer_dig": "minecraft:wood"
   },
   "contexts": {
+    "default": {},
     "test": {
       "attributes": {
         "generic.attack_speed": 114514
       },
       "effects": {
         "test": [10, 5]
+      }
+    },
+    "testaaa": {
+      "attributes": {
+        "generic.attack_speed": 114514
       }
     }
   }

@@ -8,6 +8,7 @@
     "MaterialDataMixin",
     "MaterialDataMixin$DeserializerMixin",
     "MaterialImprovementDataMixin",
+    "MaterialMultiplierMixin",
     "MaterialVariantDataMixin"
   ],
   "client": [

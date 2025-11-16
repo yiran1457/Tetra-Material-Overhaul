@@ -5,6 +5,7 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.yiran.tmo.ContextData;
 import net.yiran.tmo.core.IMaterialData;
+import net.yiran.tmo.core.IMaterialMultiplier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -38,6 +39,7 @@ public class MaterialImprovementDataMixin extends ImprovementData {
         attributeList.add(AttributeHelper.multiplyModifiers(extract.primaryAttributes, material.primary));
         attributeList.add(AttributeHelper.multiplyModifiers(extract.secondaryAttributes, material.secondary));
         attributeList.add(AttributeHelper.multiplyModifiers(extract.tertiaryAttributes, material.tertiary));
+        attributeList.add(AttributeHelper.multiplyModifiers(((IMaterialMultiplier)extract).getMagicAttributes(), material.magicCapacity));
 
         List<EffectData> effectList = new ArrayList<>();
         effectList.add(effects);
@@ -45,6 +47,7 @@ public class MaterialImprovementDataMixin extends ImprovementData {
         effectList.add(EffectData.multiply(extract.primaryEffects, material.primary, material.primary));
         effectList.add(EffectData.multiply(extract.secondaryEffects, material.secondary, material.secondary));
         effectList.add(EffectData.multiply(extract.tertiaryEffects, material.tertiary, material.tertiary));
+        effectList.add(EffectData.multiply(((IMaterialMultiplier)extract).getMagicEffects(), material.magicCapacity, material.magicCapacity));
 
         if (((IMaterialData) material).getContextData() != null) {
             Map<String, ContextData> contextMap = ((IMaterialData) material).getContextData();

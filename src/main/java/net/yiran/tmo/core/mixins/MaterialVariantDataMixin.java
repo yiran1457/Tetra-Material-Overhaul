@@ -1,11 +1,6 @@
 package net.yiran.tmo.core.mixins;
 
-import com.google.common.collect.Multimap;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.yiran.tmo.ContextData;
-import net.yiran.tmo.core.IMaterialData;
-import net.yiran.tmo.core.IMaterialMultiplier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -13,11 +8,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import se.mickelus.tetra.module.data.*;
-import se.mickelus.tetra.properties.AttributeHelper;
 
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.List;
 
 @Mixin(value = MaterialVariantData.class, remap = false)
 public class MaterialVariantDataMixin extends VariantData {
@@ -26,6 +18,18 @@ public class MaterialVariantDataMixin extends VariantData {
     @Unique
     private List<String> contexts = List.of("default");
 
+    @Inject(method = "combine", at = @At("RETURN"))
+    private void combine(MaterialData material, CallbackInfoReturnable<ImprovementData> cir) {
+        ContextData.combineVariantData(
+                this,
+                cir.getReturnValue(),
+                contexts,
+                extract,
+                material
+        );
+    }
+
+    /*
     @Inject(method = "combine", at = @At("HEAD"), cancellable = true)
     public void combine(MaterialData material, CallbackInfoReturnable<VariantData> cir) {
         cir.setReturnValue(combineWrap(material));
@@ -122,5 +126,5 @@ public class MaterialVariantDataMixin extends VariantData {
         }
 
         return result;
-    }
+    }*/
 }

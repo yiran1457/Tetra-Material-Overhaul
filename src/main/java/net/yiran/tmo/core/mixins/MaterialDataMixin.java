@@ -32,7 +32,7 @@ public class MaterialDataMixin implements IMaterialData {
         return contextData;
     }
 
-    @Inject(method = "copyFields", at = @At("RETURN"),remap = false)
+    @Inject(method = "copyFields", at = @At("RETURN"), remap = false)
     private static void copyFields(MaterialData from, MaterialData to, CallbackInfo ci) {
         if (((IMaterialData) from).getContextData() != null) {
             if (((IMaterialData) to).getContextData() != null) {
@@ -55,18 +55,12 @@ public class MaterialDataMixin implements IMaterialData {
             if (json.getAsJsonObject().has("contexts")) {
                 Map<String, ContextData> contexts = context.deserialize(json.getAsJsonObject().get("contexts"), ContextData.TYPE);
                 if (!contexts.containsKey("default")) {
-                    var defaultContext = new ContextData();
-                    defaultContext.attributes=data.attributes;
-                    defaultContext.effects=data.effects;
-                    contexts.put("default", defaultContext);
+                    contexts.put("default", ContextData.buildDefaultContextData(data));
                 }
                 ((IMaterialData) data).setContextData(contexts);
             } else {
                 Map<String, ContextData> contextData = new HashMap<>();
-                var defaultContext = new ContextData();
-                defaultContext.attributes=data.attributes;
-                defaultContext.effects=data.effects;
-                contextData.put("default", defaultContext);
+                contextData.put("default", ContextData.buildDefaultContextData(data));
                 ((IMaterialData) data).setContextData(contextData);
             }
         }
